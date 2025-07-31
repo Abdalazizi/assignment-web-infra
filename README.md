@@ -68,7 +68,11 @@ ssh ubuntu@localhost -p 2210
 
 ### Initial Setup Script
 
-When the `lb-01` container starts, it runs a setup script: [`setup.sh`](lb/setup.sh).  
+When the `lb-01` container starts, 
+runs a setup script: [`setup.sh`](lb/setup.sh).  
+```bash
+$ sudo /usr/local/bin/setup.sh
+```
 This script:
 - Installs **HAProxy** (the load balancer software)
 - Installs **nano** (a simple text editor)

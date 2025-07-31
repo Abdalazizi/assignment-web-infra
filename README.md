@@ -1,0 +1,106 @@
+# Web Infrastructure Lab
+
+This project lets you run a simple web infrastructure on your computer using Docker. It includes two web servers and a load balancer, so you can see how real websites handle traffic. **No technical background required!**
+
+---
+
+## What’s Included?
+
+- **web-01** and **web-02**: Two web servers, both using the Docker image [`twariq/medprice:v1`](https://hub.docker.com/r/twariq/medprice).  
+  > This image runs a medical information web app. You can read the full app documentation [here](https://github.com/TWARIQABDUL/medicalinformation/blob/master/README.md).
+- **lb-01**: A load balancer that splits traffic between the web servers.
+- **Docker Compose**: Makes it easy to start and stop everything with one command.
+
+---
+
+## Requirements
+
+- **Docker** and **Docker Compose** installed on your computer.
+  - [Get Docker](https://docs.docker.com/get-docker/)
+  - [Get Docker Compose](https://docs.docker.com/compose/install/)
+- At least **2 GB RAM** and some free disk space.
+
+---
+
+## How to Start
+
+1. **Download the project**
+   ```bash
+   git clone <repo-url>
+   cd web_infra_lab
+   ```
+
+2. **Start the lab**
+   ```bash
+   docker compose up -d --build
+   ```
+   This will automatically pull the `twariq/medprice:v1` image for the web servers.
+
+3. **Check if it’s running**
+   ```bash
+   docker compose ps
+   ```
+   You should see `web-01`, `web-02`, and `lb-01` listed.
+
+---
+
+## Accessing the Servers
+
+- **web-01:** [http://localhost:8080](http://localhost:8080)
+- **web-02:** [http://localhost:8083](http://localhost:8083)
+- **Load Balancer (lb-01):** [http://localhost:8082](http://localhost:8082)
+
+---
+
+## See the Load Balancer in Action
+
+You can test the load balancer by sending requests to its address and observing how it distributes traffic between the web servers. For example, run the following command multiple times:
+
+```bash
+curl -I http://localhost:8082
+```
+
+You should see responses alternating between `web01` and `web02` in the `x-served-by` header, like this:
+
+```text
+HTTP/1.1 200 OK
+server: nginx/1.29.0
+...
+x-served-by: web01
+
+HTTP/1.1 200 OK
+server: nginx/1.29.0
+...
+x-served-by: web02
+```
+
+This shows that the load balancer is successfully distributing requests between your web servers.
+
+---
+
+## Stopping the Lab
+
+To stop and remove everything, run:
+```bash
+docker compose down
+```
+
+---
+
+## Troubleshooting
+
+- If you get errors about ports in use, make sure nothing else is running on ports 8080, 8082, or 8083.
+- To reset everything, run:
+  ```bash
+  docker compose down -v
+  ```
+
+---
+
+## Summary
+
+- **Start everything:** `docker compose up -d --build`
+- **Visit your servers:** [http://localhost:8080](http://localhost:8080), [http://localhost:8083](http://localhost:8083), [http://localhost:8082](http://localhost:8082)
+- **Stop everything:** `docker compose down`
+
+Enjoy experimenting with your own web infrastructure!

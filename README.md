@@ -52,6 +52,74 @@ This project lets you run a simple web infrastructure on your computer using Doc
 
 ---
 
+## Using and Configuring the Load Balancer (`lb-01`)
+
+### SSH Access
+
+You can connect to the load balancer container using SSH:
+
+```bash
+ssh ubuntu@localhost -p 2210
+# Password: pass123
+```
+
+- Username: `ubuntu`
+- Password: `pass123`
+
+### Initial Setup Script
+
+When the `lb-01` container starts, it runs a setup script: [`setup.sh`](lb/setup.sh).  
+This script:
+- Installs **HAProxy** (the load balancer software)
+- Installs **nano** (a simple text editor)
+- Prints instructions for further configuration
+
+### Configuring HAProxy
+
+1. **SSH into lb-01** (see above).
+2. Open the HAProxy config file with nano:
+   ```bash
+   sudo nano /etc/haproxy/haproxy.cfg
+   ```
+3. **Make sure your configuration file contains the following sections:**
+
+   **Global section:**
+   ```
+   global
+       log /dev/log    local0
+       log /dev/log    local1 notice
+       chroot /var/lib/haproxy
+       stats socket /run/haproxy/admin.sock mode 660 level admin
+       stats timeout 30s
+       user haproxy
+       group haproxy
+       daemon
+       maxconn 256
+   ```
+
+   **Frontend and backend sections:**
+   ```
+   frontend http-in
+       bind *:80
+       default_backend servers
+
+   backend servers
+       balance roundrobin
+       server web01 172.20.0.11:80 check
+       server web02 172.20.0.12:80 check
+       http-response set-header X-Served-By %[srv_name]
+   ```
+
+   These settings ensure the load balancer splits traffic between both web servers and adds a header to show which server handled the request.
+
+4. Edit the configuration as needed (for example, to change backend servers or load balancing rules).
+5. Restart HAProxy to apply changes:
+   ```bash
+   sudo systemctl restart haproxy
+   ```
+
+---
+
 ## See the Load Balancer in Action
 
 You can test the load balancer by sending requests to its address and observing how it distributes traffic between the web servers. For example, run the following command multiple times:
@@ -101,6 +169,7 @@ docker compose down
 
 - **Start everything:** `docker compose up -d --build`
 - **Visit your servers:** [http://localhost:8080](http://localhost:8080), [http://localhost:8083](http://localhost:8083), [http://localhost:8082](http://localhost:8082)
+- **SSH to load balancer:** `ssh ubuntu@localhost -p 2210` (password: `pass123`)
 - **Stop everything:** `docker compose down`
 
 Enjoy experimenting with your own web infrastructure!

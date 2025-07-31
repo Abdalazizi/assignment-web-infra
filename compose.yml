@@ -9,7 +9,7 @@ networks:
 
 services:
   web-01:
-    image: twariq/medprice:v3
+    image: twariq/medprice:v4
     container_name: web-01
     hostname: web-01
     networks:
@@ -20,7 +20,7 @@ services:
       - "8080:80"
 
   web-02:
-    image: twariq/medprice:v3
+    image: twariq/medprice:v4
     container_name: web-02
     hostname: web-02
     networks:

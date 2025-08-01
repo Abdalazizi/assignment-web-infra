@@ -68,11 +68,11 @@ ssh ubuntu@localhost -p 2210
 
 ### Initial Setup Script
 
-When the `lb-01` container starts, 
-runs a setup script: [`setup.sh`](lb/setup.sh).  
+When the `lb-01` container starts, run a setup script: [`setup.sh`]
 ```bash
-$ sudo /usr/local/bin/setup.sh
-```
+   $sudo /usr/local/bin/setup.sh 
+
+```  
 This script:
 - Installs **HAProxy** (the load balancer software)
 - Installs **nano** (a simple text editor)
@@ -114,12 +114,12 @@ This script:
        http-response set-header X-Served-By %[srv_name]
    ```
 
-   These settings ensure the load balancer splits traffic between both web servers and adds a header to show which server handled the request.
+   > **Important:** You must make sure these sections are present in `/etc/haproxy/haproxy.cfg` for the load balancer to work correctly.
 
 4. Edit the configuration as needed (for example, to change backend servers or load balancing rules).
 5. Restart HAProxy to apply changes:
    ```bash
-   sudo systemctl restart haproxy
+   sudo service haproxy restart
    ```
 
 ---
